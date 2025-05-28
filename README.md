@@ -1,7 +1,7 @@
 # Blender-A3DA
 Project Diva A3DA stage animation importer for Blender (somewhat functional).
 
-Right now supports only stage object animation.
+
 
 https://github.com/user-attachments/assets/c88a75a4-f3ec-49e7-9f21-32b25da4eac8
 
@@ -13,3 +13,7 @@ https://github.com/user-attachments/assets/c88a75a4-f3ec-49e7-9f21-32b25da4eac8
 
 Right now its not possible to import more than a single A3DA file per scene, as the controller names will overlap. I plan to make this possible.
 Some transformations are weird after importing, and i dont know why. Some objects will be fixed by inverting their Z rotation, I'm still not sure why this happens.
+
+Right now supports only stage object animation.
+This is my first time trying to write a Blender script, so don't expect this to work perfectly.
+Im open to feedback.
