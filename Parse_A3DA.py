@@ -7,7 +7,7 @@ inA3da = r"C:\path\to\your\a3da"
 #I know the code is kind of a mess
 #But it works (somewhat)
 
-#Offset for all ids, so names won't overlap when using multiple a3da files. Add one to Max Id, and put it here.
+#Offset for all ids, so names won't overlap when using multiple a3da files. Add one to Max Id, and put it here. (No longer needed)
 idOffset = 0
 
 #Offset all frames.
@@ -24,6 +24,26 @@ a3daFile = open(inA3da, 'r')
 maxId = 0
 maxFrame = 0
 beginning = 0 
+
+### Define A3DA name###
+for line in a3daFile:
+    if 'file_name=' in line:
+        a3daName = line.split('=')
+        a3daName = a3daName[1]
+        a3daName = a3daName.strip('.a3da')
+        a3daName = a3daName + "_"
+        print('Object prefix:', a3daName)
+        break
+a3daFile.seek(0)
+
+'''
+a3daName = inA3da.split(r"\")
+a3daName = a3daName[-1]
+a3daName = a3daName.strip('.a3da')
+a3daName = a3daName.upper() + "_"
+#a3daName = a3daName + "_"
+'''
+
 
 class DivaObj:
     def __init__(obj, id, name, parents):
@@ -239,9 +259,9 @@ def setTransform(settling):
         
         if not bpy.context.scene.objects.get(objName):
             print('[setTransform] Mesh not found, using id:', objName)
-            objName = 'OBJ_' + str(settling['id'] + idOffset)
+            objName = a3daName + str(settling['id'] + idOffset)
         else:
-            print('[setTransform] Matching mesh found:', objName)
+            print('[setTransform] Matching mesh found:', objName)   #this might be skipping. Found object id matching an object with friendly name, neither had settling or anim
             
              
         if settling['transform'] == 'trans':
@@ -318,7 +338,7 @@ def setKeyframe(line, nameDict):    #Change this later.
     dataHalf = dataHalf.split(',')      #0=frame, 1=value, 2=intrapolation(?)
     print('[setKeyFrame]',dataHalf)
 
-    name = 'OBJ_' + str(firstHalf[1])
+    name = a3daName + str(firstHalf[1])
     #name = nameDict[int(name)]
     print('[setKeyFrame] name is:', name)
 
@@ -400,7 +420,7 @@ for line in a3daFile:
     if divaObjTmp != None:
         nameDict[int(divaObjTmp.id)] = divaObjTmp.name  #Dictionary containing id -> name
 
-        newName = 'OBJ_' + str(divaObjTmp.id + idOffset)
+        newName = a3daName + str(divaObjTmp.id + idOffset)
 
         print('[main]', divaObjTmp.name)
         print('[main]', divaObjTmp.parents)
@@ -427,8 +447,8 @@ for line in a3daFile:
     try:
         divaObjTmp = parseName(line)
         if divaObjTmp != None:
-            newName = 'OBJ_' + str(divaObjTmp.id + idOffset)
-            parentId = 'OBJ_' + str(idDict[divaObjTmp.parents] + idOffset)
+            newName = a3daName + str(divaObjTmp.id + idOffset)
+            parentId = a3daName + str(idDict[divaObjTmp.parents] + idOffset)
 
             assignParent(parentId, newName, divaObjTmp.meshName)
     except KeyError:
