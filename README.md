@@ -10,14 +10,13 @@ https://github.com/user-attachments/assets/c88a75a4-f3ec-49e7-9f21-32b25da4eac8
 - Load the script in the blender scripting tab, set the path to your A3DA file, and hit run.
 - Controllers will be created for each object declared in the A3DA, and the script will try to match the controllers to existing objects on the scene.
 - The framerate for every (i think) PV is 60fps.
-- Its possible to import multiply A3DA files with some help:
-  After importing the first file, at the en of the console output will be "Max id was: XXX". Add 1 to this parameter, and put it into the idOffest parameter in the script befor loading the second file. Repeat as necesary.
+- Its possible to import multiply A3DA files, just load them one after the other.
 
 ## Limits
 Some transformations are weird after importing, and i dont know why. Some objects will be fixed by inverting their Z rotation, I'm still not sure why this happens.
 
 Right now supports only stage object animation.
-It does not support camera anim, morphs, lights, and HRC bone anim.
+It does not support camera anim, morphs, lights, instance animation, and HRC bone anim.
 
 This is my first time trying to write a Blender script, so don't expect this to work perfectly.
 Im open to any feedback!
