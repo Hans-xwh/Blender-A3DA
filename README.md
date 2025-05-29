@@ -17,7 +17,7 @@ https://github.com/user-attachments/assets/c88a75a4-f3ec-49e7-9f21-32b25da4eac8
 Some transformations are weird after importing, and i dont know why. Some objects will be fixed by inverting their Z rotation, I'm still not sure why this happens.
 
 Right now supports only stage object animation.
-At this point it does not support camera anim, morphs, lights, and HRC bone anim.
+It does not support camera anim, morphs, lights, and HRC bone anim.
 
 This is my first time trying to write a Blender script, so don't expect this to work perfectly.
 Im open to any feedback!
