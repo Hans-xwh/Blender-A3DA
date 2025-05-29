@@ -7,10 +7,23 @@ inA3da = r"C:\path\to\your\a3da"
 #I know the code is kind of a mess
 #But it works (somewhat)
 
+#Offset for all ids, so names won't overlap when using multiple a3da files. Add one to Max Id, and put it here.
+idOffset = 0
+
+#Offset all frames.
+frameOffset = 0 #Parameter ignored in most cases
+
+
+
 ### Open A3da ###
 print('')
 print('Start')
 a3daFile = open(inA3da, 'r')
+
+#Dont change this
+maxId = 0
+maxFrame = 0
+beginning = 0 
 
 class DivaObj:
     def __init__(obj, id, name, parents):
@@ -40,6 +53,9 @@ cleanSceneNames()
 
 
 def parseName(line):
+    global maxId
+
+    
     line = line.strip()
     if not line.startswith('object.') or ('.name=' not in line and 'parent_name=' not in line) or '.tex_transform' in line:
         #print('[parseName] Line ignored:', line)
@@ -53,6 +69,9 @@ def parseName(line):
             print('[parseName] Types:', types)
             DivaObj.id = int(types[1])
             print('[parseName] Id:', DivaObj.id)
+
+            if maxId < DivaObj.id:
+                maxId = DivaObj.id
             
             DivaObj.name = valuePart
             print('[parseName] Controll name:', DivaObj.name)
@@ -96,6 +115,10 @@ def parseName(line):
     
 
 def parseSettle(line):
+    global maxFrame
+    global frameOffset
+    global beginning
+
     if line.startswith('object.') and '.value=' in line and 'visibility' not in line:
         try: 
             configPart, valuePart = line.split('=', 1)
@@ -107,6 +130,20 @@ def parseSettle(line):
             return settling #dict
         except ValueError:
             print('[parseSettle] Exception')
+
+    elif line.startswith('play_control'):
+        if '.size' in line:
+            line = line.split('=') #1: maxFrame
+            maxFrame = int(line[1])
+
+        elif 'begin' in line:
+            line = line.split('=') #1: maxFrame
+            beginning = int(line[1])
+            frameOffset = beginning
+
+        
+
+
     
 
 def createObject(Name):
@@ -189,26 +226,24 @@ def assignParent(parent, ctrlName, objName):  #Need to devide the crete empty in
 
 
 def setTransform(settling):
-    
+    global idOffset
+
     print('[setTransform] SetTransform start')
     #objName = 'OBJ_' + str(settling['id'])
     objName = nameDict[settling['id']].split('|')
     print(objName)
     objName = objName[-1].strip('OBJ_')
-    
 
     try:                    #Need to change something here, as meshes will have friendly names, while controllers will have ugly names
         #, y, z = (0,0,0,)
         
         if not bpy.context.scene.objects.get(objName):
             print('[setTransform] Mesh not found, using id:', objName)
-            objName = 'OBJ_' + str(settling['id'])
+            objName = 'OBJ_' + str(settling['id'] + idOffset)
         else:
             print('[setTransform] Matching mesh found:', objName)
             
-        
-
-            
+             
         if settling['transform'] == 'trans':
             print('[setTramsform] Location (XYZ)')
             
@@ -227,7 +262,6 @@ def setTransform(settling):
                     print('[setTransform] Transform Y =', settling['value'])
 
         elif settling['transform'] == 'rot':
-
             print('[setTramsform] Rotation (XYZ)')
 
             match settling['axis']:
@@ -269,31 +303,36 @@ def setTransform(settling):
         print('[setTransform]', ex)
         raise Exception
     
-def setKeyframe(line, nameDict):
+def setKeyframe(line, nameDict):    #Change this later.
+    global frameOffset
+    global maxFrame
+
     #print('[setKeyFrame]',line)
     firstHalf, dataHalf = line.split('=', 1)
 
     firstHalf = firstHalf.split('.')    #1=id, 2=transType, 3=axis, 5=index?
+    firstHalf[1] = int(firstHalf[1]) + idOffset
     print('[setKeyFrame]',firstHalf)
 
     dataHalf = dataHalf.strip('(').strip(')')
     dataHalf = dataHalf.split(',')      #0=frame, 1=value, 2=intrapolation(?)
     print('[setKeyFrame]',dataHalf)
 
-    name = 'OBJ_' + firstHalf[1]
+    name = 'OBJ_' + str(firstHalf[1])
     #name = nameDict[int(name)]
     print('[setKeyFrame] name is:', name)
 
         #Time to set keyframes in blender
     try:
         obj = bpy.data.objects[name]
-        frame = float(dataHalf[0])
+        frame = int(dataHalf[0]) + frameOffset
+
+        '''if maxFrame < frame:
+            maxFrame = frame'''
+
         if len(dataHalf) == 1:
             print('[setKeyFrame] Invalid frame data, defaulting to 0')
             dataHalf = [dataHalf, 0]
-
-        '''if firstHalf[2] == "scale":
-            return'''
         
         if firstHalf[2] == 'trans':
             match firstHalf[3]:
@@ -361,7 +400,7 @@ for line in a3daFile:
     if divaObjTmp != None:
         nameDict[int(divaObjTmp.id)] = divaObjTmp.name  #Dictionary containing id -> name
 
-        newName = 'OBJ_' + str(divaObjTmp.id)
+        newName = 'OBJ_' + str(divaObjTmp.id + idOffset)
 
         print('[main]', divaObjTmp.name)
         print('[main]', divaObjTmp.parents)
@@ -384,13 +423,12 @@ idDict = {divaName: divaId for divaId, divaName in nameDict.items()}
 print(idDict)
 
 ### Assign Parents & clear parent inverse###
-
 for line in a3daFile:
     try:
         divaObjTmp = parseName(line)
         if divaObjTmp != None:
-            newName = 'OBJ_' + str(divaObjTmp.id)
-            parentId = 'OBJ_' + str(idDict[divaObjTmp.parents])
+            newName = 'OBJ_' + str(divaObjTmp.id + idOffset)
+            parentId = 'OBJ_' + str(idDict[divaObjTmp.parents] + idOffset)
 
             assignParent(parentId, newName, divaObjTmp.meshName)
     except KeyError:
@@ -425,6 +463,10 @@ for line in a3daFile:
         print('')
 
 a3daFile.close()
+
+print('Starting frame was:', beginning)
+print('Max id was:', maxId + idOffset)
+print('Max frame was:', maxFrame + frameOffset)
 print('Excecution finished')
 
 
