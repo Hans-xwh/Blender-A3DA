@@ -22,6 +22,8 @@ This is my first time trying to write a Blender script, so don't expect this to 
 Im open to any feedback!
 
 ## Next Steps
-I'll fix whatever is causing the weird rotations.
-I plant to keep working on this to support at least:
-DivaScript _change field_ commands, instance animation, and camera animation.
+I'll fix whatever is causing the weird rotations. 
+I plant to keep working on this to support at least: 
+DivaScript _change field_ commands, instance animation, and camera animation. 
+
+A3DA animations are meant to be cyclic, it also stores interpolation data, and some kind of visibility animation. Handling this is my top priority right now. 
