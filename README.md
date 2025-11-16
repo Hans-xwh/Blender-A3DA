@@ -14,7 +14,7 @@ https://github.com/user-attachments/assets/d781be2a-18ee-444f-9dd8-1af4e50a5f9b
 Another example, Common World Domination
 https://youtu.be/QDQPE-ZaXfo
 
-Gaikotsu Gakudan To Riria https://youtu.be/KmMnff5_q9A
+Gaikotsu Gakudan To Riria https://youtu.be/t4o9OkwPAO4
 
 ## Usage
 - Import the stage model, and apply all rotations. The script will change all object names to uppercase, so make sure no conflicts will occur. If needed, rename the meshes.
