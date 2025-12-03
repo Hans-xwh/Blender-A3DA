@@ -1,7 +1,8 @@
 # Blender-A3DA
 Project Diva A3DA stage animation importer for Blender (somewhat functional).
 
-Im working on this, but I'll take some time to polish it before uploading it. 
+Im working on this, but I'll take some time to polish it before uploading it.
+This version is realy old... Im working on it!
 
 
 
@@ -15,6 +16,8 @@ Another example, Common World Domination
 https://youtu.be/QDQPE-ZaXfo
 
 Gaikotsu Gakudan To Riria https://youtu.be/t4o9OkwPAO4
+
+Object instances & Change Field commands - [Ghost Rule](https://youtu.be/YU3VF_tHu4g)
 
 ## Usage
 - Import the stage model, and apply all rotations. The script will change all object names to uppercase, so make sure no conflicts will occur. If needed, rename the meshes.
