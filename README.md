@@ -2,7 +2,7 @@
 Project Diva A3DA stage animation importer for Blender (somewhat functional).
 
 Im working on this, but I'll take some time to polish it before uploading it.
-This version is realy old... I wouldn't use recommend using it. This doesn't reflect my current version!
+This version is realy old... I wouldn't recommend using it. This doesn't reflect my current version!
 
 
 
