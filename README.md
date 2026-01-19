@@ -1,4 +1,4 @@
-# Blender-A3DA
+# A3DA Parser
 Project Diva A3DA stage animation importer for Blender (somewhat functional).
 
 Im working on this, but I'll take some time to polish it before uploading it.
